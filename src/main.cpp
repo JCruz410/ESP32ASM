@@ -1,10 +1,11 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
-#define WIFI_NETWORK "Hunter-Joel Wifi"
-#define WIFI_PASSWORD "hunterjoel"
+#define WIFI_NETWORK "WiFi Name"
+#define WIFI_PASSWORD "WiFi password"
 #define WIFI_TIMEOUT_MS 20000
 
+// establish wifi connection 
 void connectToWiFi(){
 
   Serial.print("Connecting to WiFi");
@@ -38,7 +39,7 @@ void setup()
   connectToWiFi();
 }
 
-// test
+
 void loop() {
   // put your main code here, to run repeatedly:
 }
