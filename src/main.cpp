@@ -38,6 +38,7 @@ void setup()
   connectToWiFi();
 }
 
+// test
 void loop() {
   // put your main code here, to run repeatedly:
 }
