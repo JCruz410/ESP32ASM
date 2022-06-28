@@ -1,42 +1,39 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
-#define WIFI_NETWORK "WiFi Name"
-#define WIFI_PASSWORD "WiFi password"
-#define WIFI_TIMEOUT_MS 20000
 
-// establish wifi connection 
-void connectToWiFi(){
+const char* ssid = "Wifi name";
+const char* password = "Wifi Pass";
 
-  Serial.print("Connecting to WiFi");
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_NETWORK, WIFI_PASSWORD);
-
-  unsigned long startAttemptTime = millis();
-
-  while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < WIFI_TIMEOUT_MS)
-  {
-    Serial.print(".");
-    delay(100);
-  }
-
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.println("Failed!");
-    // take action
-  }
-  else
-  {
-    Serial.print("Connected!");
-    Serial.println(WiFi.localIP());
-  }
-}
+AsyncWebServer server(80);
 
 
 void setup() 
 {
-  Serial.begin(9600);  
-  connectToWiFi();
+ Serial.begin(9600);
+ delay(10);
+
+// connect to wifi
+ WiFi.begin(ssid, password);
+
+ while (WiFi.status() != WL_CONNECTED)
+ {
+    delay(1000);
+    Serial.println("Connecting to WiFi....");
+ }
+
+// serial monitor prints ip address
+ Serial.println(WiFi.localIP());
+
+// type ip address into web browser to confirm "hello world" print connection
+ server.on("", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "text/plain", "Hello World");
+
+ });
+
+ server.begin();
 }
 
 
