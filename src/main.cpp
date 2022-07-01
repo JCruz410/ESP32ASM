@@ -4,10 +4,10 @@
 #include <ESPAsyncWebServer.h>
 
 
-const char* ssid = "wifi";
-const char* password = "pass";
+const char* ssid = "your wifi";
+const char* password = "your pass";
 
-AsyncWebServer server(80);
+WiFiServer server(80);
 
 
 void setup() 
@@ -28,10 +28,10 @@ void setup()
  Serial.println(WiFi.localIP());
 
  // type ip address into web browser to confirm "hello world" print connection
- server.on("", HTTP_GET, [](AsyncWebServerRequest *request){
+ /*server.on("", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", "Hello World");
 
- });
+ }); */
 
  server.begin();
 
@@ -39,8 +39,26 @@ void setup()
 }
 
 
+int value = 0;
 
+void loop() 
+{
+   WiFiClient client = server.available();
 
-void loop() {
+   if (!client) {
+    return;
+  }
+  Serial.println("New Client."); 
 
+  while(!client.available()) {
+    delay(1);
+  }
+
+  String request = client.readStringUntil('\r');
+  Serial.print(request);
+
+  client.println("HTTP/1.1 200 OK");
+   client.println("Content-type:text/html");
+   client.println("");
+   delay(1);
 }
