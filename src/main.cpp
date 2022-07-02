@@ -6,45 +6,43 @@
 
 
 const char* ssid = "ur wifi";
-const char* password = "ur pass";
+const char* password = "ur wifi pass";
 
+// setting pin for direction on esp32
 const int DIR = 12;
-const int STEP = 14;
-const int  steps_per_rev = 200;
 
+// setting pin for speed on esp32
+const int STEP = 14;
+
+// how long motor will spend in direction (higher = longer)
+const int  steps_per_rev = 1500;
+
+// establishing connection to server for esp32
 WiFiServer server(80);
 
 
 void setup() 
 {
- Serial.begin(9600);
- pinMode(STEP, OUTPUT);
- pinMode(DIR, OUTPUT);
- delay(10);
+   //setting pins for motor and baud rate for esp32
+   Serial.begin(9600);
+   pinMode(STEP, OUTPUT);
+   pinMode(DIR, OUTPUT);
+   delay(10);
  
 
-// connect to wifi
- WiFi.begin(ssid, password);
+   // connect to wifi
+   WiFi.begin(ssid, password);
 
- while (WiFi.status() != WL_CONNECTED)
- {
-    delay(1000);
-    Serial.println("Connecting to WiFi....");
- }
+   while (WiFi.status() != WL_CONNECTED)
+   {
+      delay(1000);
+      Serial.println("Connecting to WiFi....");
+   }
 
-// serial monitor prints ip address
- Serial.println(WiFi.localIP());
+   // serial monitor prints ip address
+   Serial.println(WiFi.localIP());
 
- // type ip address into web browser to confirm "hello world" print connection
- /*server.on("", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(200, "text/plain", "Hello World");
-
- }); */
-
-
- server.begin();
-
-
+   server.begin();
 }
 
 
@@ -52,6 +50,7 @@ int value = 0;
 
 void loop() 
 {
+   // print if app connections to esp32
    WiFiClient client = server.available();
 
    if (!client) 
@@ -70,16 +69,57 @@ void loop()
    Serial.print(request);
 
    // motor code
-
    if(request.indexOf("STEP") != -1)
    {
-      digitalWrite(STEP, !digitalRead(STEP));
-   }
+        // clockwise direction = HIGH
+        digitalWrite(DIR, HIGH);
 
+       for(int i = 0; i<steps_per_rev; i++)
+      {
+         // control speed of motor by changing value of microseconds
+         // Lower = faster
+         digitalWrite(STEP, HIGH);
+         delayMicroseconds(600);
+         digitalWrite(STEP, LOW);
+         delayMicroseconds(600);
+
+         // stop motor halfway into turning clockwise
+         /* if (i == 750)
+         {
+            delay(3000);
+         } */
+      }
+      // delay before spinning in the opposite direction
+     delay(3000);
+
+   }
+    
    if(request.indexOf("DIR") != -1)
    {
-      digitalWrite(DIR, !digitalRead(DIR));
+      // counter clockwise direction = LOW
+      digitalWrite(DIR, LOW);
+
+      for(int i = 0; i<steps_per_rev; i++)
+      {  
+         // control speed of motor by changing value of microseconds
+         // Lower = faster
+         digitalWrite(STEP, HIGH);
+         delayMicroseconds(600);
+         digitalWrite(STEP, LOW);
+         delayMicroseconds(600);
+
+      }
+      delay(3000);
+       digitalWrite(DIR, HIGH);
+       for (int i = 0; i < steps_per_rev; i++)
+       {
+          digitalWrite(STEP, HIGH);
+         delayMicroseconds(600);
+         digitalWrite(STEP, LOW);
+         delayMicroseconds(600);
+       }
    }
+
 
  
 
