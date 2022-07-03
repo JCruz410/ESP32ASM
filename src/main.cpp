@@ -6,7 +6,9 @@
 
 
 const char* ssid = "ur wifi";
-const char* password = "ur wifi pass";
+const char* password = "ur pass";
+
+
 
 // setting pin for direction on esp32
 const int DIR = 12;
@@ -41,7 +43,6 @@ void setup()
 
    // serial monitor prints ip address
    Serial.println(WiFi.localIP());
-
    server.begin();
 }
 
