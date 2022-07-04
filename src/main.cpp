@@ -25,6 +25,7 @@ WiFiServer server(80);
 
 void setup() 
 {
+
    //setting pins for motor and baud rate for esp32
    Serial.begin(9600);
    pinMode(STEP, OUTPUT);
@@ -35,30 +36,31 @@ void setup()
    // connect to wifi
    WiFi.begin(ssid, password);
 
+   // attempt to connect to ssid and password
    while (WiFi.status() != WL_CONNECTED)
    {
       delay(1000);
       Serial.println("Connecting to WiFi....");
    }
 
-   // serial monitor prints ip address
+   // when connected, print ip address and begin server
    Serial.println(WiFi.localIP());
    server.begin();
 }
 
 
-int value = 0;
-
 void loop() 
 {
-   // print if app connections to esp32
+   // keep client up as long as its available
    WiFiClient client = server.available();
 
+   // if there is nothing connected, try again
    if (!client) 
    {
       return;
    }
 
+   // print when android app is connected
    Serial.println("New Client."); 
 
   while(!client.available()) 
@@ -74,7 +76,10 @@ void loop()
    {
         // clockwise direction = HIGH
         digitalWrite(DIR, HIGH);
-      int pulse_delay = 2000;
+
+        // set revolution for each pulse
+         int pulse_delay = 2000;
+
        for(int i = 0; i<steps_per_rev; i++)
       {
          // control speed of motor by changing value of microseconds
@@ -84,24 +89,31 @@ void loop()
          digitalWrite(STEP, LOW);
          delayMicroseconds(pulse_delay);
 
-         // stop motor halfway into turning clockwise
+         // if i = 300 revolutions, set speed of motor to 5500
           if (i == 300)
          {
             pulse_delay = 5500;
          } 
+
+         // if revolutions == 600, set speed of motor to 2000
          if(i == 600)
          {
             pulse_delay = 2000;
          }
+
+         // of revolutions == 800, set speed of motor to 5500
           if (i == 800)
          {
             pulse_delay = 5500;
          } 
+
+         // if revolutions == 1100, set speed of motor to 2000
          if(i == 1100)
          {
             pulse_delay = 2000;
          }
       }
+
       // delay before spinning in the opposite direction
      delay(1500);
 
@@ -124,19 +136,9 @@ void loop()
       }
       delay(3000);
 
-       /* digitalWrite(DIR, HIGH);
-       for (int i = 0; i < steps_per_rev; i++)
-       {
-          digitalWrite(STEP, HIGH);
-         delayMicroseconds(2000);
-         digitalWrite(STEP, LOW);
-         delayMicroseconds(2000);
-       } */
    }
 
-
- 
-
+   // print every time action is done by android app
    client.println("HTTP/1.1 200 OK");
    client.println("Content-type:text/html");
    client.println("");
