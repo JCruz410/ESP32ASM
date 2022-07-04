@@ -17,7 +17,7 @@ const int DIR = 12;
 const int STEP = 14;
 
 // how long motor will spend in direction (higher = longer)
-const int  steps_per_rev = 1500;
+const int  steps_per_rev = 1200;
 
 // establishing connection to server for esp32
 WiFiServer server(80);
@@ -68,30 +68,42 @@ void loop()
 
    String request = client.readStringUntil('\r');
    Serial.print(request);
-
+   
    // motor code
    if(request.indexOf("STEP") != -1)
    {
         // clockwise direction = HIGH
         digitalWrite(DIR, HIGH);
-
+      int pulse_delay = 2000;
        for(int i = 0; i<steps_per_rev; i++)
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
          digitalWrite(STEP, HIGH);
-         delayMicroseconds(600);
+         delayMicroseconds(pulse_delay);
          digitalWrite(STEP, LOW);
-         delayMicroseconds(600);
+         delayMicroseconds(pulse_delay);
 
          // stop motor halfway into turning clockwise
-         /* if (i == 750)
+          if (i == 300)
          {
-            delay(3000);
-         } */
+            pulse_delay = 5500;
+         } 
+         if(i == 600)
+         {
+            pulse_delay = 2000;
+         }
+          if (i == 800)
+         {
+            pulse_delay = 5500;
+         } 
+         if(i == 1100)
+         {
+            pulse_delay = 2000;
+         }
       }
       // delay before spinning in the opposite direction
-     delay(3000);
+     delay(1500);
 
    }
     
@@ -105,20 +117,21 @@ void loop()
          // control speed of motor by changing value of microseconds
          // Lower = faster
          digitalWrite(STEP, HIGH);
-         delayMicroseconds(600);
+         delayMicroseconds(2000);
          digitalWrite(STEP, LOW);
-         delayMicroseconds(600);
+         delayMicroseconds(2000);
 
       }
       delay(3000);
-       digitalWrite(DIR, HIGH);
+
+       /* digitalWrite(DIR, HIGH);
        for (int i = 0; i < steps_per_rev; i++)
        {
           digitalWrite(STEP, HIGH);
-         delayMicroseconds(600);
+         delayMicroseconds(2000);
          digitalWrite(STEP, LOW);
-         delayMicroseconds(600);
-       }
+         delayMicroseconds(2000);
+       } */
    }
 
 
