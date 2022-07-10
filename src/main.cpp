@@ -99,11 +99,14 @@ void loop()
    String request = client.readStringUntil('\r');
    Serial.print(request);
    
-   // motor code
+   // CONVEYOR BELT MOTOR CODE
    if(request.indexOf("STEP") != -1)
    {
         // clockwise direction = HIGH
         digitalWrite(DIR, HIGH);
+
+        // turn ledRED on when conveyor starts
+        digitalWrite(ledRED, !digitalRead(ledRED));
 
         // set revolution for each pulse
          int pulse_delay = 2000;
@@ -163,6 +166,7 @@ void loop()
 
       }
       delay(3000);
+      digitalWrite(ledGREEN, !digitalRead(ledGREEN));
 
    }
 
