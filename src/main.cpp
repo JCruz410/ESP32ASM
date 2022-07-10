@@ -10,11 +10,25 @@ const char* password = "ur pass";
 
 
 
-// setting pin for direction on esp32
-const int DIR = 12;
+// setting pin for conveyor motor
+const int DIR = 25;
+const int STEP = 26;
 
-// setting pin for speed on esp32
-const int STEP = 14;
+// setting pins for pb dispenser motor
+const int DIR2 = 12;
+const int STEP2 = 14;
+
+// setting pins for jelly dispenser motor
+const int DIR3 = 19;
+const int STEP3 = 18;
+
+// setting pins for bread dispenser motor
+const int DIR4 = 22;
+const int STEP4 = 23;
+
+// setting pins for led's
+const int ledRED = 16;
+const int ledGREEN = 17;
 
 // how long motor will spend in direction (higher = longer)
 const int  steps_per_rev = 1200;
@@ -23,13 +37,27 @@ const int  steps_per_rev = 1200;
 WiFiServer server(80);
 
 
+
 void setup() 
 {
 
    //setting pins for motor and baud rate for esp32
    Serial.begin(9600);
+
+   // define motor pins
    pinMode(STEP, OUTPUT);
    pinMode(DIR, OUTPUT);
+   pinMode(STEP2, OUTPUT);
+   pinMode(DIR2, OUTPUT);
+   pinMode(STEP3, OUTPUT);
+   pinMode(DIR3, OUTPUT);
+   pinMode(STEP4, OUTPUT);
+   pinMode(DIR4, OUTPUT);
+
+   // define LED pins
+   pinMode(ledRED, OUTPUT);
+   pinMode(ledGREEN, OUTPUT);
+
    delay(10);
  
 
@@ -138,6 +166,47 @@ void loop()
 
    }
 
+
+
+   // motor 2 code (peanut butter dispenser)
+   if (request.indexOf("STEP2") != -1)
+   {
+
+   }
+
+   if(request.indexOf("DIR2") != -1)
+   {
+
+   }
+
+
+
+ 
+   // motor 3 code (jelly dispenser)
+   if (request.indexOf("STEP3") != -1)
+   {
+
+   }
+
+   if (request.indexOf("DIR3") != -1)
+   {
+
+   }
+
+
+   // motor 4 code (bread dispenser)
+   if (request.indexOf("STEP4") != -1)
+   {
+
+   }
+
+   if (request.indexOf("DIR4") != -1)
+   {
+
+   }
+
+
+   
    // print every time action is done by android app
    client.println("HTTP/1.1 200 OK");
    client.println("Content-type:text/html");
