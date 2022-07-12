@@ -10,13 +10,13 @@ const char* password = "ur pass";
 
 
 
-// setting pin for conveyor motor
-const int DIR = 25;
-const int STEP = 26;
+// setting pin for conveyor motor, 12 and 14 are temporary pins for a motor
+const int DIR = 12;
+const int STEP = 14;
 
 // setting pins for pb dispenser motor
-const int DIR2 = 12;
-const int STEP2 = 14;
+const int DIR2 = 25;
+const int STEP2 = 26;
 
 // setting pins for jelly dispenser motor
 const int DIR3 = 19;
@@ -27,16 +27,14 @@ const int DIR4 = 22;
 const int STEP4 = 23;
 
 // setting pins for led's
-const int ledRED = 16;
-const int ledGREEN = 17;
+const int ledRED = 16;  
+const int ledGREEN = 17;   
 
 // how long motor will spend in direction (higher = longer)
 const int  steps_per_rev = 1200;
 
 // establishing connection to server for esp32
 WiFiServer server(80);
-
-
 
 void setup() 
 {
@@ -106,7 +104,7 @@ void loop()
         digitalWrite(DIR, HIGH);
 
         // turn ledRED on when conveyor starts
-        digitalWrite(ledRED, !digitalRead(ledRED));
+        digitalWrite(ledRED, HIGH);
 
         // set revolution for each pulse
          int pulse_delay = 2000;
@@ -165,8 +163,11 @@ void loop()
          delayMicroseconds(2000);
 
       }
-      delay(3000);
-      digitalWrite(ledGREEN, !digitalRead(ledGREEN));
+      digitalWrite(ledRED, LOW);
+      digitalWrite(ledGREEN, HIGH);
+      delay(10000);
+      digitalWrite(ledGREEN, LOW);
+
 
    }
 
