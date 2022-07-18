@@ -15,16 +15,16 @@ const int DIR = 12;
 const int STEP = 14;
 
 // setting pins for pb dispenser motor
-const int DIRPB = 25;
-const int STEPPB = 26;
+const int DIPB = 25;
+const int STEB = 26;
 
 // setting pins for jelly dispenser motor
-const int DIRJELLY = 19;
-const int STEPJELLY = 18;
+const int DJELLY = 19;
+const int STJELLY = 18;
 
 // setting pins for bread dispenser motor
-const int DIRBREAD = 22;
-const int STEPBREAD = 23;
+const int DEEBREAD = 22;
+const int SBREAD = 23;
 
 // setting pins for led's
 const int ledRED = 16;  
@@ -32,7 +32,7 @@ const int ledGREEN = 17;
 
 // how long motor will spend in direction (higher = longer)
 const int  steps_per_rev = 1300;
-const int pb_motor = 300;
+const int pb_motor = 1200;
 const int jelly_motor = 300;
 const int bread_motor = 300;
 
@@ -48,12 +48,12 @@ void setup()
    // define motor pins
    pinMode(STEP, OUTPUT);
    pinMode(DIR, OUTPUT);
-   pinMode(STEPPB, OUTPUT);
-   pinMode(DIRPB, OUTPUT);
-   pinMode(STEPJELLY, OUTPUT);
-   pinMode(DIRJELLY, OUTPUT);
-   pinMode(STEPBREAD, OUTPUT);
-   pinMode(DIRBREAD, OUTPUT);
+   pinMode(STEB, OUTPUT);
+   pinMode(DIPB, OUTPUT);
+   pinMode(STJELLY, OUTPUT);
+   pinMode(DJELLY, OUTPUT);
+   pinMode(SBREAD, OUTPUT);
+   pinMode(DEEBREAD, OUTPUT);
 
    // define LED pins
    pinMode(ledRED, OUTPUT);
@@ -177,10 +177,10 @@ void loop()
 
 
    // motor 2 code (peanut butter dispenser)
- if(request.indexOf("STEPPB") != -1)
+ if(request.indexOf("STEB") != -1)
    {
         // counter-clockwise direction = LOW
-        digitalWrite(DIR, LOW);
+        digitalWrite(DIPB, LOW);
 
         // set revolution for each pulse
          int pulse_delay = 2000;
@@ -189,9 +189,9 @@ void loop()
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(STEB, HIGH);
          delayMicroseconds(pulse_delay);
-         digitalWrite(STEP, LOW);
+         digitalWrite(STEB, LOW);
          delayMicroseconds(pulse_delay);
 
       }
@@ -201,18 +201,18 @@ void loop()
 
    }
     
-   if(request.indexOf("DIRPB") != -1)
+   if(request.indexOf("DIPB") != -1)
    {
       // clockwise direction = HIGH
-      digitalWrite(DIR, HIGH);
+      digitalWrite(DIPB, HIGH);
 
       for(int i = 0; i < pb_motor; i++)
       {  
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(STEB, HIGH);
          delayMicroseconds(2000);
-         digitalWrite(STEP, LOW);
+         digitalWrite(STEB, LOW);
          delayMicroseconds(2000);
 
       }
@@ -221,10 +221,10 @@ void loop()
 
 
    // motor 3 code (jelly dispenser)
-    if(request.indexOf("STEPJELLY") != -1)
+    if(request.indexOf("STJELLY") != -1)
    {
         // counter-clockwise direction = LOW
-        digitalWrite(DIR, LOW);
+        digitalWrite(DJELLY, LOW);
 
         // set revolution for each pulse
          int pulse_delay = 2000;
@@ -233,9 +233,9 @@ void loop()
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(STJELLY, HIGH);
          delayMicroseconds(pulse_delay);
-         digitalWrite(STEP, LOW);
+         digitalWrite(STJELLY, LOW);
          delayMicroseconds(pulse_delay);
 
       }
@@ -245,28 +245,28 @@ void loop()
 
    }
     
-   if(request.indexOf("DIRJELLY") != -1)
+   if(request.indexOf("DJELLY") != -1)
    {
       // clockwise direction = HIGH
-      digitalWrite(DIR, HIGH);
+      digitalWrite(DJELLY, HIGH);
 
       for(int i = 0; i < jelly_motor; i++)
       {  
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(STJELLY, HIGH);
          delayMicroseconds(2000);
-         digitalWrite(STEP, LOW);
+         digitalWrite(STJELLY, LOW);
          delayMicroseconds(2000);
 
       }
    }
 
    // motor 4 code (bread dispenser)
-  if(request.indexOf("STEPBREAD") != -1)
+  if(request.indexOf("SBREAD") != -1)
    {
         // counter-clockwise direction = LOW
-        digitalWrite(DIR, LOW);
+        digitalWrite(DEEBREAD, LOW);
 
         // set revolution for each pulse
          int pulse_delay = 2000;
@@ -275,9 +275,9 @@ void loop()
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(SBREAD, HIGH);
          delayMicroseconds(pulse_delay);
-         digitalWrite(STEP, LOW);
+         digitalWrite(SBREAD, LOW);
          delayMicroseconds(pulse_delay);
 
       }
@@ -287,18 +287,18 @@ void loop()
 
    }
     
-   if(request.indexOf("DIRBREAD") != -1)
+   if(request.indexOf("DEEBREAD") != -1)
    {
       // clockwise direction = HIGH
-      digitalWrite(DIR, HIGH);
+      digitalWrite(DEEBREAD, HIGH);
 
       for(int i = 0; i < bread_motor; i++)
       {  
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(SBREAD, HIGH);
          delayMicroseconds(2000);
-         digitalWrite(STEP, LOW);
+         digitalWrite(SBREAD, LOW);
          delayMicroseconds(2000);
 
       }
