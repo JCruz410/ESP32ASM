@@ -12,7 +12,7 @@ const char* password = "ur pass";
 
 // setting pin for conveyor motor, 12 and 14 are temporary pins for a motor
 const int DIR = 12;
-const int STEP = 14;
+const int cow = 14;
 
 // setting pins for pb dispenser motor
 const int DIPB = 25;
@@ -46,7 +46,7 @@ void setup()
    Serial.begin(9600);
 
    // define motor pins
-   pinMode(STEP, OUTPUT);
+   pinMode(cow, OUTPUT);
    pinMode(DIR, OUTPUT);
    pinMode(STEB, OUTPUT);
    pinMode(DIPB, OUTPUT);
@@ -101,7 +101,7 @@ void loop()
    Serial.print(request);
    
    // FULL SANDWICH CODE
-   if(request.indexOf("STEP") != -1)
+   if(request.indexOf("cow") != -1)
    {
 
        int pulse_delay = 2000;
@@ -139,7 +139,7 @@ void loop()
          
       }
 
-      delay(2000);
+      /* delay(2000);
          
         // start the conveyor belt motor after bread is dropped
         // clockwise direction = HIGH
@@ -149,9 +149,9 @@ void loop()
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(cow, HIGH);
          delayMicroseconds(pulse_delay);
-         digitalWrite(STEP, LOW);
+         digitalWrite(cow, LOW);
          delayMicroseconds(pulse_delay);
 
          // if i = 300 revolutions, set speed of motor to 5500
@@ -250,9 +250,9 @@ void loop()
       {  
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(cow, HIGH);
          delayMicroseconds(2000);
-         digitalWrite(STEP, LOW);
+         digitalWrite(cow, LOW);
          delayMicroseconds(2000);
 
       }
@@ -285,8 +285,8 @@ void loop()
          digitalWrite(SBREAD, LOW);
          delayMicroseconds(pulse_delay);
          
-      }
-
+      } 
+   */
       digitalWrite(ledRED, LOW);
       digitalWrite(ledGREEN, HIGH);
       delay(10000);
@@ -343,9 +343,9 @@ void loop()
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(cow, HIGH);
          delayMicroseconds(pulse_delay);
-         digitalWrite(STEP, LOW);
+         digitalWrite(cow, LOW);
          delayMicroseconds(pulse_delay);
 
          // if i = 300 revolutions, set speed of motor to 6000
@@ -394,9 +394,9 @@ void loop()
       {  
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(cow, HIGH);
          delayMicroseconds(2000);
-         digitalWrite(STEP, LOW);
+         digitalWrite(cow, LOW);
          delayMicroseconds(2000);
 
       }
@@ -487,9 +487,9 @@ void loop()
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(cow, HIGH);
          delayMicroseconds(pulse_delay);
-         digitalWrite(STEP, LOW);
+         digitalWrite(cow, LOW);
          delayMicroseconds(pulse_delay);
 
          // of revolutions == 800, set speed of motor to 5500
@@ -540,9 +540,9 @@ void loop()
       {  
          // control speed of motor by changing value of microseconds
          // Lower = faster
-         digitalWrite(STEP, HIGH);
+         digitalWrite(cow, HIGH);
          delayMicroseconds(2000);
-         digitalWrite(STEP, LOW);
+         digitalWrite(cow, LOW);
          delayMicroseconds(2000);
 
       }
