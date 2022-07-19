@@ -33,8 +33,8 @@ const int ledGREEN = 17;
 // how long motor will spend in direction (higher = longer)
 const int  steps_per_rev = 1300;
 const int pb_motor = 1200;
-const int jelly_motor = 300;
-const int bread_motor = 300;
+const int jelly_motor = 1200;
+const int bread_motor = 1200;
 
 // establishing connection to server for esp32
 WiFiServer server(80);
@@ -214,12 +214,11 @@ void loop()
             delayMicroseconds(pulse_delay);
 
             }
-
             delay(1000);
 
             // clockwise direction = HIGH
             digitalWrite(DJELLY, HIGH);
-
+            
             for(int i = 0; i < jelly_motor; i++)
             {  
                // control speed of motor by changing value of microseconds
@@ -229,6 +228,8 @@ void loop()
                digitalWrite(STJELLY, LOW);
                delayMicroseconds(pulse_delay);
             }
+
+            delay(1000);
 
          } 
 
@@ -403,14 +404,14 @@ void loop()
       // set direction of bread dispenser HIGH = Clockwise
       digitalWrite(DEEBREAD, HIGH);
 
-      for(int i = 0; i<bread_motor; i++)
+      for(int i = 0; i < bread_motor; i++)
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
          digitalWrite(SBREAD, HIGH);
-         delayMicroseconds(pulse_delay);
+         delayMicroseconds(2000);
          digitalWrite(SBREAD, LOW);
-         delayMicroseconds(pulse_delay);
+         delayMicroseconds(2000);
          
       }
 
@@ -424,9 +425,9 @@ void loop()
          // control speed of motor by changing value of microseconds
          // Lower = faster
          digitalWrite(SBREAD, HIGH);
-         delayMicroseconds(pulse_delay);
+         delayMicroseconds(2000);
          digitalWrite(SBREAD, LOW);
-         delayMicroseconds(pulse_delay);
+         delayMicroseconds(2000);
          
       }
 
