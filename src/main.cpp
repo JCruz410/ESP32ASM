@@ -5,36 +5,42 @@
 
 
 
-const char* ssid = "ur wifi";
-const char* password = "ur pass";
+const char* ssid = "SpectrumSetup-1F";
+const char* password = "epicnest509";
 
 
 
 // setting pin for conveyor motor, 12 and 14 are temporary pins for a motor
-const int DIR = 12;
-const int cow = 14;
+const int DIR = 19;      // original 12
+const int cow = 18;      // original 14
 
 // setting pins for pb dispenser motor
-const int DIPB = 25;
-const int STEB = 26;
+const int DIPB = 22;   // original 25
+const int STEB = 23;   // original 26
 
 // setting pins for jelly dispenser motor
-const int DJELLY = 19;
-const int STJELLY = 18;
+const int DJELLY = 27;   // original is 19
+const int STJELLY = 32;    // original is 18
 
 // setting pins for bread dispenser motor
-const int DEEBREAD = 22;
-const int SBREAD = 23;
+const int DEEBREAD = 25;
+const int SBREAD = 26;
 
 // setting pins for led's
 const int ledRED = 16;  
-const int ledGREEN = 17;   
+const int ledGREEN = 17; 
+const int ledYELLOW = 21;
+
+// setting pins for buttons
+const int fullButton = 13;
+const int pbButton = 14;
+const int jellyButton = 15;
 
 // how long motor will spend in direction (higher = longer)
 const int  steps_per_rev = 1300;
 const int pb_motor = 1200;
 const int jelly_motor = 1200;
-const int bread_motor = 1200;
+const int bread_motor = 1100;
 
 // establishing connection to server for esp32
 WiFiServer server(80);
@@ -58,11 +64,17 @@ void setup()
    // define LED pins
    pinMode(ledRED, OUTPUT);
    pinMode(ledGREEN, OUTPUT);
+   pinMode(ledYELLOW, OUTPUT);
+
+   // define physical buttons
+   pinMode(fullButton, OUTPUT);
+   pinMode(pbButton, OUTPUT);
+   pinMode(jellyButton, OUTPUT);
 
    delay(10);
  
 
-   // connect to wifi
+   //connect to wifi
    WiFi.begin(ssid, password);
 
    // attempt to connect to ssid and password
@@ -73,15 +85,18 @@ void setup()
    }
 
    // when connected, print ip address and begin server
-   Serial.println(WiFi.localIP());
-   server.begin();
+   Serial.println(WiFi.localIP()); 
+   server.begin(); 
 }
 
 
 void loop() 
 {
+
+   digitalWrite(ledYELLOW, HIGH);
+
    // keep client up as long as its available
-   WiFiClient client = server.available();
+  WiFiClient client = server.available();
 
    // if there is nothing connected, try again
    if (!client) 
@@ -98,21 +113,23 @@ void loop()
    }
 
    String request = client.readStringUntil('\r');
-   Serial.print(request);
+   Serial.print(request); 
+
+   // turn on the yellow led permanently
    
    // FULL SANDWICH CODE
-   if(request.indexOf("cow") != -1)
+    if(request.indexOf("cow") != -1)
    {
 
        int pulse_delay = 2000;
 
-        // turn ledRED on when conveyor starts
-        digitalWrite(ledRED, HIGH);
+      // turn ledRED on when conveyor starts
+      digitalWrite(ledRED, HIGH);
 
       // set direction of bread dispenser HIGH = Clockwise
-      digitalWrite(DEEBREAD, HIGH);
+       digitalWrite(DEEBREAD, LOW);
 
-      for(int i = 0; i<bread_motor; i++)
+      for(int i = 0; i < bread_motor; i++)
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
@@ -126,9 +143,9 @@ void loop()
       delay(3000);
 
       // change direction of bread motor to CClockwise to bring back
-      digitalWrite(DEEBREAD, LOW);
+      digitalWrite(DEEBREAD, HIGH);
 
-       for(int i = 0; i<bread_motor; i++)
+       for(int i = 0; i < bread_motor; i++)
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
@@ -139,13 +156,13 @@ void loop()
          
       }
 
-      /* delay(2000);
+      delay(2000);
          
         // start the conveyor belt motor after bread is dropped
         // clockwise direction = HIGH
         digitalWrite(DIR, HIGH);
 
-       for(int i = 0; i<steps_per_rev; i++)
+       for(int i = 0; i < steps_per_rev; i++)
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
@@ -154,99 +171,77 @@ void loop()
          digitalWrite(cow, LOW);
          delayMicroseconds(pulse_delay);
 
-         // if i = 300 revolutions, set speed of motor to 5500
-          if (i == 300)
+
+         if(i == 300)
          {
             pulse_delay = 6000;
-
-            // set direction for PB dispenser
-            digitalWrite(DIPB, LOW);
-
-            for(int i = 0; i < pb_motor; i++)
-            {
-            // control speed of motor by changing value of microseconds
-            // Lower = faster
-            digitalWrite(STEB, HIGH);
-            delayMicroseconds(pulse_delay);
-            digitalWrite(STEB, LOW);
-            delayMicroseconds(pulse_delay);
-
-            }
-         }
-
-            delay(1000);
-
-            // clockwise direction = HIGH
+      
             digitalWrite(DIPB, HIGH);
 
-            for(int i = 0; i < pb_motor; i++)
-            {  
-               // control speed of motor by changing value of microseconds
-               // Lower = faster
+            for (int i = 0; i < pb_motor; i++)
+            {
                digitalWrite(STEB, HIGH);
-               delayMicroseconds(pulse_delay);
+               delayMicroseconds(2000);
                digitalWrite(STEB, LOW);
-               delayMicroseconds(pulse_delay);
+               delayMicroseconds(2000);
             }
-          
 
-         // if revolutions == 600, set speed of motor to 2000
+            digitalWrite(DIPB, LOW);
+
+            for (int i = 0; i < pb_motor; i++)
+            {
+               digitalWrite(STEB, HIGH);
+               delayMicroseconds(2000);
+               digitalWrite(STEB, LOW);
+               delayMicroseconds(2000);
+            }
+
+         }
+         
          if(i == 600)
          {
             pulse_delay = 2000;
          }
-         
-         // of revolutions == 800, set speed of motor to 5500
-          if (i == 800)
+
+         if(i == 800)
          {
             pulse_delay = 6000;
 
-            // set direction for PB dispenser
+            digitalWrite(DJELLY, HIGH);
+
+            for (int i = 0; i < jelly_motor; i++)
+            {
+               digitalWrite(STJELLY, HIGH);
+               delayMicroseconds(2000);
+               digitalWrite(STJELLY, LOW);
+               delayMicroseconds(2000);
+            }
+
             digitalWrite(DJELLY, LOW);
 
-            for(int i = 0; i < jelly_motor; i++)
+            for (int i = 0; i < jelly_motor; i++)
             {
-            // control speed of motor by changing value of microseconds
-            // Lower = faster
-            digitalWrite(STJELLY, HIGH);
-            delayMicroseconds(pulse_delay);
-            digitalWrite(STJELLY, LOW);
-            delayMicroseconds(pulse_delay);
-
-            }
-            delay(1000);
-
-            // clockwise direction = HIGH
-            digitalWrite(DJELLY, HIGH);
-            
-            for(int i = 0; i < jelly_motor; i++)
-            {  
-               // control speed of motor by changing value of microseconds
-               // Lower = faster
                digitalWrite(STJELLY, HIGH);
-               delayMicroseconds(pulse_delay);
+               delayMicroseconds(2000);
                digitalWrite(STJELLY, LOW);
-               delayMicroseconds(pulse_delay);
+               delayMicroseconds(2000);
             }
 
-            delay(1000);
-
-         } 
-
-         // if revolutions == 1100, set speed of motor to 2000
+         }
+         
          if(i == 1100)
          {
             pulse_delay = 2000;
          }
+   
       }
 
-      // delay before spinning in the opposite direction
-     delay(1500);
+      delay(3000);
 
-     // counter clockwise direction = LOW
+      // counter clockwise direction = LOW
       digitalWrite(DIR, LOW);
 
-      for(int i = 0; i<steps_per_rev; i++)
+      for(int i = 0; i < steps_per_rev; i++)
       {  
          // control speed of motor by changing value of microseconds
          // Lower = faster
@@ -256,6 +251,8 @@ void loop()
          delayMicroseconds(2000);
 
       }
+
+      delay(3000);
 
       // set direction of bread dispenser HIGH = Clockwise
       digitalWrite(DEEBREAD, HIGH);
@@ -286,25 +283,26 @@ void loop()
          delayMicroseconds(pulse_delay);
          
       } 
-   */
+   
       digitalWrite(ledRED, LOW);
       digitalWrite(ledGREEN, HIGH);
       delay(10000);
       digitalWrite(ledGREEN, LOW);
 
    }
+
     
 
    // motor 2 code (peanut butter dispenser)/ PB only sandwich
- if(request.indexOf("STEB") != -1)
+  if(request.indexOf("STEB") != -1)
    {
         int pulse_delay = 2000;
 
-        // turn ledRED on when conveyor starts
-        digitalWrite(ledRED, HIGH);
+      // turn ledRED on when conveyor starts
+      digitalWrite(ledRED, HIGH);
 
       // set direction of bread dispenser HIGH = Clockwise
-      digitalWrite(DEEBREAD, HIGH);
+       digitalWrite(DEEBREAD, LOW);
 
       for(int i = 0; i < bread_motor; i++)
       {
@@ -320,9 +318,9 @@ void loop()
       delay(3000);
 
       // change direction of bread motor to CClockwise to bring back
-      digitalWrite(DEEBREAD, LOW);
+      digitalWrite(DEEBREAD, HIGH);
 
-       for(int i = 0; i<bread_motor; i++)
+       for(int i = 0; i < bread_motor; i++)
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
@@ -339,7 +337,7 @@ void loop()
         // clockwise direction = HIGH
         digitalWrite(DIR, HIGH);
 
-       for(int i = 0; i<steps_per_rev; i++)
+       for(int i = 0; i < steps_per_rev; i++)
       {
          // control speed of motor by changing value of microseconds
          // Lower = faster
@@ -348,195 +346,41 @@ void loop()
          digitalWrite(cow, LOW);
          delayMicroseconds(pulse_delay);
 
-         // if i = 300 revolutions, set speed of motor to 6000
-          if (i == 300)
+
+         if(i == 300)
          {
             pulse_delay = 6000;
-
-            // set direction for PB dispenser
-            digitalWrite(DIPB, LOW);
-
-            for(int i = 0; i < pb_motor; i++)
-            {
-            // control speed of motor by changing value of microseconds
-            // Lower = faster
-            digitalWrite(STEB, HIGH);
-            delayMicroseconds(pulse_delay);
-            digitalWrite(STEB, LOW);
-            delayMicroseconds(pulse_delay);
-
-            }
-
-            delay(1000);
-
-            // clockwise direction = HIGH
+      
             digitalWrite(DIPB, HIGH);
 
-            for(int i = 0; i < pb_motor; i++)
-            {  
-               // control speed of motor by changing value of microseconds
-               // Lower = faster
-               digitalWrite(STEB, HIGH);
-               delayMicroseconds(pulse_delay);
-               digitalWrite(STEB, LOW);
-               delayMicroseconds(pulse_delay);
-            }
-         }
-      }
-
-      // delay before spinning in the opposite direction
-     delay(1500);
-
-     // counter clockwise direction = LOW
-      digitalWrite(DIR, LOW);
-
-      for(int i = 0; i<steps_per_rev; i++)
-      {  
-         // control speed of motor by changing value of microseconds
-         // Lower = faster
-         digitalWrite(cow, HIGH);
-         delayMicroseconds(2000);
-         digitalWrite(cow, LOW);
-         delayMicroseconds(2000);
-
-      }
-
-      // set direction of bread dispenser HIGH = Clockwise
-      digitalWrite(DEEBREAD, HIGH);
-
-      for(int i = 0; i < bread_motor; i++)
-      {
-         // control speed of motor by changing value of microseconds
-         // Lower = faster
-         digitalWrite(SBREAD, HIGH);
-         delayMicroseconds(2000);
-         digitalWrite(SBREAD, LOW);
-         delayMicroseconds(2000);
-         
-      }
-
-      delay(3000);
-
-      // change direction of bread motor to CClockwise to bring back
-      digitalWrite(DEEBREAD, LOW);
-
-       for(int i = 0; i<bread_motor; i++)
-      {
-         // control speed of motor by changing value of microseconds
-         // Lower = faster
-         digitalWrite(SBREAD, HIGH);
-         delayMicroseconds(2000);
-         digitalWrite(SBREAD, LOW);
-         delayMicroseconds(2000);
-         
-      }
-
-      digitalWrite(ledRED, LOW);
-      digitalWrite(ledGREEN, HIGH);
-      delay(10000);
-      digitalWrite(ledGREEN, LOW);
-
-         } 
-    
-
-   // motor 3 code (jelly dispenser)// Jelly only sandwich
-    if(request.indexOf("STJELLY") != -1)
-   {
-       int pulse_delay = 2000;
-
-        // turn ledRED on when conveyor starts
-        digitalWrite(ledRED, HIGH);
-
-      // set direction of bread dispenser HIGH = Clockwise
-      digitalWrite(DEEBREAD, HIGH);
-
-      for(int i = 0; i < bread_motor; i++)
-      {
-         // control speed of motor by changing value of microseconds
-         // Lower = faster
-         digitalWrite(SBREAD, HIGH);
-         delayMicroseconds(pulse_delay);
-         digitalWrite(SBREAD, LOW);
-         delayMicroseconds(pulse_delay);
-         
-      }
-
-      delay(3000);
-
-      // change direction of bread motor to CClockwise to bring back
-      digitalWrite(DEEBREAD, LOW);
-
-       for(int i = 0; i<bread_motor; i++)
-      {
-         // control speed of motor by changing value of microseconds
-         // Lower = faster
-         digitalWrite(SBREAD, HIGH);
-         delayMicroseconds(pulse_delay);
-         digitalWrite(SBREAD, LOW);
-         delayMicroseconds(pulse_delay);
-         
-      }
-
-      delay(2000);
-         
-        // start the conveyor belt motor after bread is dropped
-        // clockwise direction = HIGH
-        digitalWrite(DIR, HIGH);
-
-       for(int i = 0; i<steps_per_rev; i++)
-      {
-         // control speed of motor by changing value of microseconds
-         // Lower = faster
-         digitalWrite(cow, HIGH);
-         delayMicroseconds(pulse_delay);
-         digitalWrite(cow, LOW);
-         delayMicroseconds(pulse_delay);
-
-         // of revolutions == 800, set speed of motor to 5500
-          if (i == 800)
-         {
-            pulse_delay = 6000;
-
-            // set direction for PB dispenser
-            digitalWrite(DJELLY, LOW);
-
-             for(int i = 0; i < jelly_motor; i++)
+            for (int i = 0; i < pb_motor; i++)
             {
-            // control speed of motor by changing value of microseconds
-            // Lower = faster
-            digitalWrite(STJELLY, HIGH);
-            delayMicroseconds(pulse_delay);
-            digitalWrite(STJELLY, LOW);
-            delayMicroseconds(pulse_delay);
-
+               digitalWrite(STEB, HIGH);
+               delayMicroseconds(2000);
+               digitalWrite(STEB, LOW);
+               delayMicroseconds(2000);
             }
 
-            delay(1000);
+            digitalWrite(DIPB, LOW);
 
-            // clockwise direction = HIGH
-            digitalWrite(DJELLY, HIGH);
-
-            for(int i = 0; i < jelly_motor; i++)
-            {  
-               // control speed of motor by changing value of microseconds
-               // Lower = faster
-               digitalWrite(STJELLY, HIGH);
-               delayMicroseconds(pulse_delay);
-               digitalWrite(STJELLY, LOW);
-               delayMicroseconds(pulse_delay);
+            for (int i = 0; i < pb_motor; i++)
+            {
+               digitalWrite(STEB, HIGH);
+               delayMicroseconds(2000);
+               digitalWrite(STEB, LOW);
+               delayMicroseconds(2000);
             }
 
          }
-
+   
       }
 
-      // delay before spinning in the opposite direction
-     delay(1500);
+      delay(3000);
 
-     // counter clockwise direction = LOW
+      // counter clockwise direction = LOW
       digitalWrite(DIR, LOW);
 
-      for(int i = 0; i<steps_per_rev; i++)
+      for(int i = 0; i < steps_per_rev; i++)
       {  
          // control speed of motor by changing value of microseconds
          // Lower = faster
@@ -546,6 +390,8 @@ void loop()
          delayMicroseconds(2000);
 
       }
+
+      delay(3000);
 
       // set direction of bread dispenser HIGH = Clockwise
       digitalWrite(DEEBREAD, HIGH);
@@ -575,12 +421,154 @@ void loop()
          digitalWrite(SBREAD, LOW);
          delayMicroseconds(pulse_delay);
          
-      }
-
+      } 
+   
       digitalWrite(ledRED, LOW);
       digitalWrite(ledGREEN, HIGH);
       delay(10000);
       digitalWrite(ledGREEN, LOW);
+   } 
+    
+
+   // motor 3 code (jelly dispenser)// Jelly only sandwich
+    if(request.indexOf("STJELLY") != -1)
+   {
+       int pulse_delay = 2000;
+
+      // turn ledRED on when conveyor starts
+      digitalWrite(ledRED, HIGH);
+
+      // set direction of bread dispenser HIGH = Clockwise
+       digitalWrite(DEEBREAD, LOW);
+
+      for(int i = 0; i < bread_motor; i++)
+      {
+         // control speed of motor by changing value of microseconds
+         // Lower = faster
+         digitalWrite(SBREAD, HIGH);
+         delayMicroseconds(pulse_delay);
+         digitalWrite(SBREAD, LOW);
+         delayMicroseconds(pulse_delay);
+         
+      }
+
+      delay(3000);
+
+      // change direction of bread motor to CClockwise to bring back
+      digitalWrite(DEEBREAD, HIGH);
+
+       for(int i = 0; i < bread_motor; i++)
+      {
+         // control speed of motor by changing value of microseconds
+         // Lower = faster
+         digitalWrite(SBREAD, HIGH);
+         delayMicroseconds(pulse_delay);
+         digitalWrite(SBREAD, LOW);
+         delayMicroseconds(pulse_delay);
+         
+      }
+
+      delay(2000);
+         
+        // start the conveyor belt motor after bread is dropped
+        // clockwise direction = HIGH
+        digitalWrite(DIR, HIGH);
+
+       for(int i = 0; i < steps_per_rev; i++)
+      {
+         // control speed of motor by changing value of microseconds
+         // Lower = faster
+         digitalWrite(cow, HIGH);
+         delayMicroseconds(pulse_delay);
+         digitalWrite(cow, LOW);
+         delayMicroseconds(pulse_delay);
+
+         if(i == 800)
+         {
+            pulse_delay = 6000;
+
+            digitalWrite(DJELLY, HIGH);
+
+            for (int i = 0; i < jelly_motor; i++)
+            {
+               digitalWrite(STJELLY, HIGH);
+               delayMicroseconds(2000);
+               digitalWrite(STJELLY, LOW);
+               delayMicroseconds(2000);
+            }
+
+            digitalWrite(DJELLY, LOW);
+
+            for (int i = 0; i < jelly_motor; i++)
+            {
+               digitalWrite(STJELLY, HIGH);
+               delayMicroseconds(2000);
+               digitalWrite(STJELLY, LOW);
+               delayMicroseconds(2000);
+            }
+
+         }
+         
+         if(i == 1100)
+         {
+            pulse_delay = 2000;
+         }
+   
+      }
+
+      delay(3000);
+
+      // counter clockwise direction = LOW
+      digitalWrite(DIR, LOW);
+
+      for(int i = 0; i < steps_per_rev; i++)
+      {  
+         // control speed of motor by changing value of microseconds
+         // Lower = faster
+         digitalWrite(cow, HIGH);
+         delayMicroseconds(2000);
+         digitalWrite(cow, LOW);
+         delayMicroseconds(2000);
+
+      }
+
+      delay(3000);
+
+      // set direction of bread dispenser HIGH = Clockwise
+      digitalWrite(DEEBREAD, HIGH);
+
+      for(int i = 0; i<bread_motor; i++)
+      {
+         // control speed of motor by changing value of microseconds
+         // Lower = faster
+         digitalWrite(SBREAD, HIGH);
+         delayMicroseconds(pulse_delay);
+         digitalWrite(SBREAD, LOW);
+         delayMicroseconds(pulse_delay);
+         
+      }
+
+      delay(3000);
+
+      // change direction of bread motor to CClockwise to bring back
+      digitalWrite(DEEBREAD, LOW);
+
+       for(int i = 0; i<bread_motor; i++)
+      {
+         // control speed of motor by changing value of microseconds
+         // Lower = faster
+         digitalWrite(SBREAD, HIGH);
+         delayMicroseconds(pulse_delay);
+         digitalWrite(SBREAD, LOW);
+         delayMicroseconds(pulse_delay);
+         
+      } 
+   
+      digitalWrite(ledRED, LOW);
+      digitalWrite(ledGREEN, HIGH);
+      delay(10000);
+      digitalWrite(ledGREEN, LOW);
+
    }
     
    
@@ -589,5 +577,6 @@ void loop()
    client.println("Content-type:text/html");
    client.println("");
    delay(1);
+   
 
    }
